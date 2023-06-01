@@ -13,7 +13,7 @@
 <body>
 	<header><h1>みんなの投稿</h1><hr></header>
 	<main>
-		<div id = "recode">
+		<div class = "recode">
 
 			<h2>
 				<%=request.getAttribute("message") %>

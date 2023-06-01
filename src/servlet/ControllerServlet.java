@@ -24,6 +24,7 @@ public class ControllerServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		request.setCharacterEncoding("UTF-8");
+		request.setAttribute("message", "本来ならDBからもってくる");
 		ServletContext context = getServletContext();
 		RequestDispatcher dispatcher = context.getRequestDispatcher("/top.jsp");
 		dispatcher.forward(request, response);
@@ -37,6 +38,7 @@ public class ControllerServlet extends HttpServlet {
 		//doGet(request, response);
 		request.setCharacterEncoding("UTF-8");
 		String recode = request.getParameter("recode");
+
 		String message;
 		if (recode != null) {
 			message = recode;
