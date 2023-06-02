@@ -1,3 +1,4 @@
+<%@page import="servlet.Recode"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%!
@@ -7,17 +8,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="topstyle.css">
 <title>ReCode</title>
 </head>
 <body>
-	<header><h1>みんなの投稿</h1><hr></header>
+	<header><h1>ヘッダー</h1><hr></header>
 	<main>
 		<div class = "recode">
 
-			<h2>
-				<%=request.getAttribute("message") %>
-			</h2>
+			<h3>
+				<%
+					for(Recode recode : (List<Recode>)request.getAttribute("recodes")){
+
+					}
+				%>
+
+			</h3>
 
 		</div>
 

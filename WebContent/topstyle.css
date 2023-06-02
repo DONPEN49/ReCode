@@ -17,15 +17,10 @@ main {
 
 .recode {
 
-	box-shadow: inset 3px 3px 3px 8px rgba(0,0,0,0.3);
-	border: 1px double #999999;
+	box-shadow: inset 3px 3px 3px 8px white;
+	border: 1px double rgb(255, 255, 255);
 	border-radius: 5px;
-	background-color: gray;
+	background-color: white;
     width: 50%;
     margin: 0 auto;
-}
-
-
-div.recode {
-	border: 1px double #999999;
 }
