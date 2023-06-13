@@ -17,10 +17,27 @@ main {
 
 .recode {
 
-	box-shadow: inset 3px 3px 3px 8px white;
-	border: 1px double rgb(255, 255, 255);
-	border-radius: 5px;
-	background-color: white;
-    width: 50%;
+	display: block;
+	width: 200px;
+    height: auto;
+    border-style: solid;
+    border-width: 4px;
+    border-radius: 5px;
+    padding: 8px 12px;
+    background-color: gray;
+    border-color: black;
+    margin: 0 auto;
+}
+
+.cell {
+	display: block;
+	width: 20px;
+    height: auto;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 1px;
+    padding: 2px 3px;
+    background-color: gray;
+    border-color: black;
     margin: 0 auto;
 }

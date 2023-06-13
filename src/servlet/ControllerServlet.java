@@ -1,45 +1,39 @@
 package servlet;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import action.Action;
 /**
  * Servlet implementation class ControllerServlet
  */
 @WebServlet("/controller")
 public class ControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ServletConfig  config  = null;
+	private ServletContext context = null;
+
+	@Override
+	public void init() throws ServletException {
+		this.config  = getServletConfig();
+		this.context = config.getServletContext();
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		HttpSession session = request.getSession(true);
-
-		List<Recode> recodeList = (List<Recode>)session.getAttribute("recodes");
-		if (recodeList == null) {
-			recodeList = new ArrayList<Recode>();
-			session.setAttribute("recodes", recodeList);
-		}
-
-		request.setCharacterEncoding("UTF-8");
-		request.setAttribute("recodes", recodeList);
-		request.setAttribute("message", "本来ならDBからもってくる");
-		ServletContext context = getServletContext();
-		RequestDispatcher dispatcher = context.getRequestDispatcher("/top.jsp");
-		dispatcher.forward(request, response);
+		doPost(request, response);
 	}
 
 	/**
@@ -47,30 +41,47 @@ public class ControllerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		String actName = "";					//リクエストパラメータ"act"の値
+		String actionClassName = "";		//Actionクラスの名前
+		Action action = null;					//Actionクラスのオブジェクト
+		String forwardJSP = "";				//フォワード先のJSP名
+		RequestDispatcher rd = null;		//ディスパッチャオブジェクト
 
 		request.setCharacterEncoding("UTF-8");
-		String recode = request.getParameter("recode");
-		String message = "";
+
+		String jsp = "/top.jsp";
 		try {
-			HttpSession session = request.getSession(false);
-			List<Recode> recodeList = (List<Recode>)session.getAttribute("recodes");
-			if (recode != null) {
-				Recode temp = new Recode();
-				temp.setContent(recode);
-				//レコード追加
-				recodeList.add(temp);
-				session.setAttribute("recodes", recodeList);
-				request.setAttribute("recodes", recodeList);
+			String realPath = this.context.getRealPath("/");
+			String path = realPath + "/WEB-INF/action.properties";
+
+			FileInputStream stream = new FileInputStream(path);
+			Properties props = new Properties();
+			props.load(stream);
+
+			actName = request.getParameter("act");
+
+			if (actName != null) {
+				actionClassName =props.getProperty(actName);
+			} else {
+				actionClassName =props.getProperty("top");
 			}
+			/*debag control */
+			System.out.println("debug control act = " + actName);
 
-		} catch (NullPointerException e) {
-			message = "セッションどっかいった";
+			Class<?> actionClass = Class.forName(actionClassName);
+			action = (Action)actionClass.newInstance();
+
+			forwardJSP = action.execute(request);
+			if(forwardJSP != null && !forwardJSP.equals("")) {
+				rd = context.getRequestDispatcher(forwardJSP);
+			} else {
+				rd = context.getRequestDispatcher("/top.jsp");
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			rd = context.getRequestDispatcher("/irregular_error.jsp");
 		}
-
-		ServletContext context = getServletContext();
-		RequestDispatcher dispatcher = context.getRequestDispatcher("/top.jsp");
-		dispatcher.forward(request, response);
-
+		rd.forward(request, response);
 	}
 
 }
